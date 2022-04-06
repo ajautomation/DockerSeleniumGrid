@@ -1,0 +1,52 @@
+version: "3"
+services:
+  HubService:
+    image: selenium/hub:4.0.0-rc-2-20210930
+    container_name: seleniumHub
+    ports:
+      - "4445:4444" 
+      - "4442:4442"
+      - "4443:4443"
+
+  ChromeService:
+    image: selenium/node-chrome:4.0.0-rc-2-20210930
+    shm_size: "2gb"
+    ports:
+      - "5900"  
+      - "7900"
+    environment:
+      - SE_EVENT_BUS_HOST=seleniumHub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=3
+    depends_on:
+      - HubService   
+ 
+  FirefoxService:
+    image: selenium/node-firefox:4.0.0-rc-2-20210930
+    shm_size: "2gb"
+    ports:
+      - "5900"  
+      - "7900"
+    environment:
+      - SE_EVENT_BUS_HOST=seleniumHub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=2
+    depends_on:
+      - HubService  
+
+  EdgeService:
+    image: selenium/node-edge:4.0.0-rc-2-20210930
+    shm_size: "2gb"
+    ports:
+      - "5900"  
+      - "7900"
+    environment:
+      - SE_EVENT_BUS_HOST=seleniumHub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=2
+    depends_on:
+      - HubService   
+      
